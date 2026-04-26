@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى ريم - أميرة الروح</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Amiri', serif;
+            /* خلفية كلاسيكية ملكية */
+            background: linear-gradient(135deg, #1a0b0c 0%, #2a1215 50%, #0d0506 100%);
+            background-attachment: fixed;
+            color: #f3e5ab; /* لون سكري/ذهبي فاتح */
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ruqaa-font {
+            font-family: 'Aref Ruqaa', serif;
+        }
+
+        .gold-text {
+            color: #d4af37;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(212, 175, 55, 0.1);
+            background: rgba(20, 10, 10, 0.85);
+            backdrop-filter: blur(5px);
+        }
+
+        /* حركات التلاشي والظهور */
+        .fade-transition {
+            transition: all 1.5s ease-in-out;
+        }
+
+        #intro-screen {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #110506;
+        }
+
+        #intro-screen.hidden-state {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        #main-art {
+            opacity: 0;
+            transform: translateY(30px);
+            pointer-events: none;
+            display: none;
+        }
+
+        #main-art.visible-state {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* زر البدء الكلاسيكي */
+        .start-btn {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .start-btn:hover {
+            background: #d4af37;
+            color: #110506;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* الأسطوانة الكلاسيكية */
+        .vinyl-spin {
+            animation: spin 5s linear infinite;
+        }
+        
+        .vinyl-paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* زخرفة فاصلة */
+        .divider {
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+            margin: 2rem auto;
+            opacity: 0.5;
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- 
+        ملف الصوت:
+        يجب أن يكون ملف song1.mp3 في نفس المجلد مع ملف index.html
+        هذا الكود جاهز ليعمل على GitHub Pages بدون مشاكل
+    -->
+    <audio id="love-song" src="song1.mp3" preload="auto"></audio>
+
+    <!-- شاشة البداية -->
+    <div id="intro-screen" class="fade-transition min-h-screen w-full">
+        <!-- إضاءة خلفية -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,transparent_60%)] pointer-events-none"></div>
+        
+        <div class="text-center z-10 px-4">
+            <h1 class="ruqaa-font text-4xl md:text-6xl gold-text mb-8 leading-relaxed">رسالة حب وموسيقى</h1>
+            <p class="text-xl md:text-2xl text-[#c4b58c] italic mb-12">هناك أسرار لا تبوح بها إلا الألحان..</p>
+            
+            <button onclick="startExperience()" class="start-btn ruqaa-font">
+                <i class="fas fa-play ml-2 text-sm"></i>
+                اضغطي هنا لتبدأ الحكاية
+            </button>
+        </div>
+    </div>
+
+    <!-- اللوحة الفنية والرسالة (تظهر بعد التشغيل) -->
+    <div id="main-art" class="fade-transition min-h-screen flex-col items-center justify-center p-4 py-10 w-full max-w-3xl mx-auto relative z-10">
+        
+        <div class="gold-border rounded-xl p-6 md:p-14 w-full text-center relative overflow-hidden">
+            
+            <!-- زوايا زخرفية -->
+            <div class="absolute top-4 right-4 text-[#d4af37] opacity-50"><i class="fas fa-fan"></i></div>
+            <div class="absolute top-4 left-4 text-[#d4af37] opacity-50"><i class="fas fa-fan"></i></div>
+            <div class="absolute bottom-4 right-4 text-[#d4af37] opacity-50"><i class="fas fa-fan"></i></div>
+            <div class="absolute bottom-4 left-4 text-[#d4af37] opacity-50"><i class="fas fa-fan"></i></div>
+
+            <!-- العنوان -->
+            <h2 class="ruqaa-font text-5xl md:text-6xl gold-text mb-6">إلى ريم</h2>
+            <p class="text-lg md:text-xl text-[#c4b58c] mb-6">سيدة النبض وأميرة الروح</p>
+            
+            <div class="divider"></div>
+            
+            <!-- الشعر والغزل (موسّع) -->
+            <div class="space-y-6 my-8 px-2 md:px-8">
+                <p class="text-2xl md:text-3xl leading-loose text-glow text-[#f3e5ab]" style="line-height: 2.2;">
+                    يا غزالةً سكنت حنايا القلب، ويا قمراً أضاء عتمة لياليّ.<br>
+                    في عينيكِ أقرأ أجمل قصائد الحب،<br>
+                    وفي ابتسامتكِ أرى صباحاتٍ لم تُخلق إلا لي.
+                </p>
+                
+                <p class="text-xl md:text-2xl leading-loose text-[#e0cf9b] opacity-90" style="line-height: 2;">
+                    حين أسمع ألحان الطرب الأصيل، لا أرى سوى طيفكِ يرقص بين الكلمات، ولا أسمع سوى همسكِ يذوب مع الموسيقى.<br>
+                    أنتِ لستِ فقط حبيبتي، أنتِ القصيدة التي لم يكتبها أحد، واللحن الذي خبأته أم كلثوم في حنجرتها.
+                </p>
+                
+                <!-- إطار مخصص لمقطع الأغنية -->
+                <div class="mt-10 p-8 border border-[#d4af37]/30 bg-black/50 rounded-lg shadow-inner inline-block w-full">
+                    <i class="fas fa-music text-[#d4af37] opacity-50 mb-4 text-2xl"></i>
+                    <p class="ruqaa-font text-3xl md:text-4xl gold-text leading-relaxed">
+                        "وعمري ما أشكي من حبك <br> مهما غرامك لوعني"
+                    </p>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- مشغل الموسيقى الكلاسيكي -->
+            <div class="flex flex-col items-center justify-center mt-8">
+                
+                <!-- أسطوانة الجرامافون -->
+                <div id="vinyl-record" class="w-32 h-32 md:w-40 md:h-40 rounded-full border-[6px] border-[#0a0505] shadow-[0_0_25px_rgba(212,175,55,0.3)] flex items-center justify-center mb-8 vinyl-paused relative" style="background: repeating-radial-gradient(#1a1a1a 0%, #000 5%, #1a1a1a 10%);">
+                    <div class="absolute inset-0 rounded-full opacity-40" style="background: conic-gradient(transparent 0deg, rgba(255,255,255,0.2) 45deg, transparent 90deg, transparent 180deg, rgba(255,255,255,0.2) 225deg, transparent 270deg);"></div>
+                    <!-- منتصف الأسطوانة -->
+                    <div class="w-12 h-12 md:w-14 md:h-14 bg-[#5c131c] rounded-full flex items-center justify-center shadow-inner relative z-10 border-2 border-[#d4af37]">
+                        <div class="text-[8px] md:text-[10px] text-[#d4af37] absolute top-1/4 w-full text-center ruqaa-font">لريم</div>
+                        <div class="w-2 h-2 bg-black rounded-full mt-2"></div>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div class="flex items-center gap-8 md:gap-12">
+                    <button onclick="rewind()" class="text-[#c4b58c] hover:text-[#d4af37] transition-all transform hover:scale-110" title="رجوع 10 ثواني">
+                        <i class="fas fa-backward-step text-2xl md:text-3xl"></i>
+                    </button>
+
+                    <button id="play-pause-btn" onclick="togglePlay()" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-[#d4af37] text-[#d4af37] flex items-center justify-center text-xl md:text-2xl hover:bg-[#d4af37] hover:text-[#1a0b0c] transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <i class="fas fa-pause" id="play-icon"></i>
+                    </button>
+
+                    <button onclick="forward()" class="text-[#c4b58c] hover:text-[#d4af37] transition-all transform hover:scale-110" title="تقديم 10 ثواني">
+                        <i class="fas fa-forward-step text-2xl md:text-3xl"></i>
+                    </button>
+                </div>
+
+                <!-- شريط التقدم الزمني -->
+                <div class="w-full max-w-md mt-8 flex items-center gap-4 px-2">
+                    <span id="current-time" class="text-sm text-[#c4b58c] font-sans w-12 text-right">0:00</span>
+                    <div class="flex-1 h-2 bg-[#1a0b0c] border border-[#d4af37]/30 rounded-full overflow-hidden cursor-pointer relative" onclick="seek(event)" id="progress-container">
+                        <div id="progress-bar" class="h-full bg-[#d4af37] w-0 transition-all duration-100 relative shadow-[0_0_10px_#d4af37]"></div>
+                    </div>
+                    <span id="duration" class="text-sm text-[#c4b58c] font-sans w-12 text-left">0:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- التوقيع (إعداد قيس جازي) -->
+        <footer class="mt-8 mb-4 text-center">
+            <p class="text-[#c4b58c] text-lg hover:text-[#d4af37] transition-colors duration-300">
+                من إعداد قيس جازي <i class="fas fa-feather-pointed text-sm mx-1"></i>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const audio = document.getElementById('love-song');
+        const introScreen = document.getElementById('intro-screen');
+        const mainArt = document.getElementById('main-art');
+        
+        const playIcon = document.getElementById('play-icon');
+        const vinylRecord = document.getElementById('vinyl-record');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+
+        // وظيفة زر البداية (تشغيل الأغنية وإظهار الموقع)
+        function startExperience() {
+            // محاولة تشغيل الصوت
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // نجح التشغيل
+                    transitionToMain();
+                })
+                .catch(error => {
+                    console.log("المنع التلقائي للصوت قد حدث، أو الملف غير موجود.", error);
+                    alert("الرجاء التأكد من وجود ملف song1.mp3 في نفس مسار الموقع.");
+                    // الانتقال حتى لو فشل الصوت ليتمكن المستخدم من تشغيله يدوياً
+                    transitionToMain();
+                    togglePlay(); // لتغيير الأيقونة إلى "تشغيل"
+                });
+            }
+        }
+
+        function transitionToMain() {
+            introScreen.classList.add('hidden-state');
+            
+            // إضافة حركة الدوران للأسطوانة إذا كان الصوت يعمل
+            if(!audio.paused) {
+                vinylRecord.classList.add('vinyl-spin');
+                vinylRecord.classList.remove('vinyl-paused');
+            }
+
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainArt.classList.add('visible-state');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1000);
+        }
+
+        // إيقاف وتشغيل الصوت من المشغل
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.remove('ml-1');
+                playIcon.classList.add('fa-pause');
+                vinylRecord.classList.add('vinyl-spin');
+                vinylRecord.classList.remove('vinyl-paused');
+            } else {
+                audio.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+                playIcon.classList.add('ml-1');
+                vinylRecord.classList.add('vinyl-paused');
+            }
+        }
+
+        function forward() { audio.currentTime += 10; }
+        function rewind() { audio.currentTime -= 10; }
+
+        // تحديث شريط التقدم
+        audio.addEventListener('timeupdate', () => {
+            if(audio.duration) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+            }
+        });
+
+        // قراءة طول المقطع عند تحميله
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
+
+        // القفز لنقطة محددة عند النقر على الشريط
+        function seek(e) {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if(duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        }
+
+        // تنسيق الثواني إلى دقائق:ثواني
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // عند انتهاء الأغنية
+        audio.addEventListener('ended', () => {
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            playIcon.classList.add('ml-1');
+            vinylRecord.classList.add('vinyl-paused');
+            progressBar.style.width = '0%';
+            audio.currentTime = 0;
+        });
+    </script>
+</body>
+</html>
+
+
+```
